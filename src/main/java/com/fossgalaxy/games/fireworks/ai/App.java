@@ -20,7 +20,7 @@ public class App
     public static void main( String[] args )
     {
         int numPlayers = 4;
-        int numGames = 20; // 100
+        int numGames = 1; // 100
         String agentName = "MyMCTSAgent";
 
         Random random = new Random();

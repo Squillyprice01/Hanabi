@@ -24,6 +24,10 @@ public class MyMCTSAgent extends MCTS {
         List<Action> listAction = new ArrayList<>(legalActions);
         Collections.shuffle(listAction);
 
+        // Debug statements
+//        Collection<Action> suitAc = Utils.generateSuitableActions(playerID, state);
+//        System.out.println("actions? " + suitAc);
+//        System.out.println("player: " + playerID + " list of actions " + listAction + " info " + state.getInfomation());
         return listAction.get(0);
 	}
 	
