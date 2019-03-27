@@ -17,6 +17,9 @@ import java.util.Random;
  */
 public class App 
 {
+	/**
+	 * Here is a comment
+	 */
     public static void main( String[] args )
     {
         int numPlayers = 4;
