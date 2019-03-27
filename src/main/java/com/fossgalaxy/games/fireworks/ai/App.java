@@ -17,13 +17,10 @@ import java.util.Random;
  */
 public class App 
 {
-	/**
-	 * Here is a comment
-	 */
     public static void main( String[] args )
     {
         int numPlayers = 4;
-        int numGames = 100;
+        int numGames = 20; // 100
         String agentName = "MyMCTSAgent";
 
         Random random = new Random();
