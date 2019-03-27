@@ -21,7 +21,7 @@ public class App
     {
         int numPlayers = 4;
         int numGames = 100;
-        String agentName = "SampleAgent";
+        String agentName = "MyMCTSAgent";
 
         Random random = new Random();
         StatsSummary statsSummary = new BasicStats();
