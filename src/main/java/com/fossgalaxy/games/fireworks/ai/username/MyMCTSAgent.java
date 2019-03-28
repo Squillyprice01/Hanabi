@@ -1,5 +1,7 @@
 package com.fossgalaxy.games.fireworks.ai.username;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -7,6 +9,7 @@ import java.util.List;
 
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
 import com.fossgalaxy.games.fireworks.ai.mcts.MCTS;
+import com.fossgalaxy.games.fireworks.state.CardColour;
 import com.fossgalaxy.games.fireworks.state.GameState;
 import com.fossgalaxy.games.fireworks.state.actions.Action;
 
@@ -22,8 +25,50 @@ public class MyMCTSAgent extends MCTS {
 		Collection<Action> legalActions = Utils.generateActions(playerID, state);
 
         List<Action> listAction = new ArrayList<>(legalActions);
-        Collections.shuffle(listAction);
-
+        Collections.shuffle(listAction); // picks a random action
+        
+        ArrayList<ArrayList<Integer>> numberList = new ArrayList<ArrayList<Integer>>();
+        ArrayList<ArrayList<CardColour>> colorList = new ArrayList<ArrayList<CardColour>>();
+        
+        
+        for (int numPlayers = 0; numPlayers < state.getPlayerCount(); numPlayers++) {
+        	ArrayList<Integer> tempInt = new ArrayList<Integer>();
+        	ArrayList<CardColour> tempColor = new ArrayList<CardColour>();
+	        for (int card = 0; card < state.getHand(playerID).getSize(); card++) {
+	            System.out.println("getting known value for player " + playerID+ " in slot " + card + ": " + state.getHand(playerID).getKnownValue(card));
+	            
+	        	// goal get info
+	        	tempInt.add(state.getHand(playerID).getKnownValue(card));
+	        	tempColor.add(state.getHand(playerID).getKnownColour(card));
+	        	System.out.println("tempInt " + tempInt.get(card));
+	        }
+	        numberList.add(tempInt);
+	        colorList.add(tempColor);
+        }
+        
+        // print the numList and colorList
+//        for (int j = 0; j < numberList.size(); j++) {
+//        	for (int i = 0; i < numberList.get(j).size(); i++) {
+//        		System.out.print("numberList: " + numberList.get(i).get(j));
+//     	        System.out.print("colorList: " + colorList.get(i).get(j));
+//             }
+//        }
+        
+        PrintStream f = null;
+		try {
+			f = new PrintStream("./out.txt");
+			System.setOut(f);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+        System.out.println("numberList " + numberList.get(0).get(0));
+       
+        // if the next player does not know anything about their hand - tell them something about their hand (preferably the most/best info)
+//        if ()
+        
+        
         // Debug statements
 //        Collection<Action> suitAc = Utils.generateSuitableActions(playerID, state);
 //        System.out.println("actions? " + suitAc);
