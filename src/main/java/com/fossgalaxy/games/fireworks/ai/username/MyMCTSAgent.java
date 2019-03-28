@@ -35,15 +35,16 @@ public class MyMCTSAgent extends MCTS {
         	ArrayList<Integer> tempInt = new ArrayList<Integer>();
         	ArrayList<CardColour> tempColor = new ArrayList<CardColour>();
 	        for (int card = 0; card < state.getHand(playerID).getSize(); card++) {
-	            System.out.println("getting known value for player " + playerID+ " in slot " + card + ": " + state.getHand(playerID).getKnownValue(card));
+	            System.out.println("getting known value for player " + playerID + " in slot " + card + ": " + state.getHand(playerID).getKnownValue(card));
+	            System.out.println("getting known color for player " + playerID + " in slot " + card + ": " + state.getHand(playerID).getKnownColour(card));           
 	            
 	        	// goal get info
-	        	tempInt.add(state.getHand(playerID).getKnownValue(card));
-	        	tempColor.add(state.getHand(playerID).getKnownColour(card));
-	        	System.out.println("tempInt " + tempInt.get(card));
+//	        	tempInt.add(state.getHand(playerID).getKnownValue(card));
+//	        	tempColor.add(state.getHand(playerID).getKnownColour(card));
+//	        	System.out.println("tempInt " + tempInt.get(card));
 	        }
-	        numberList.add(tempInt);
-	        colorList.add(tempColor);
+//	        numberList.add(tempInt);
+//	        colorList.add(tempColor);
         }
         
         // print the numList and colorList
@@ -54,16 +55,16 @@ public class MyMCTSAgent extends MCTS {
 //             }
 //        }
         
-        PrintStream f = null;
-		try {
-			f = new PrintStream("./out.txt");
-			System.setOut(f);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        
-        System.out.println("numberList " + numberList.get(0).get(0));
+//        PrintStream f = null;
+//		try {
+//			f = new PrintStream("./out.txt");
+//			System.setOut(f);
+//		} catch (FileNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//        
+//        System.out.println("numberList " + numberList.get(0).get(0));
        
         // if the next player does not know anything about their hand - tell them something about their hand (preferably the most/best info)
 //        if ()
