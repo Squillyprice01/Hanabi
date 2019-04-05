@@ -22,6 +22,16 @@ public class MyMCTSAgent extends MCTS {
 	 */
 	@Override
 	protected Action selectActionForRollout(GameState state, int playerID) {
+		
+		/**
+		 * Goal: 
+		 * First check if you can play a card safely. If you can play a card - then play the card
+		 * Else - If you know a card you can discard a card - then discard the card
+		 * else - If you cannot play a card or discard a card then tell a player something 
+		 * about their hand as to maximize the amount of information we can tell (and that has not already been told before)
+		 * Else - play a random move  
+		 */
+			
 		Collection<Action> legalActions = Utils.generateActions(playerID, state);
 
         List<Action> listAction = new ArrayList<>(legalActions);
