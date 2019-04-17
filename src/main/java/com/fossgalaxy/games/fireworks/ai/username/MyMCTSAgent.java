@@ -24,6 +24,7 @@ public class MyMCTSAgent extends MCTS {
 	protected Action selectActionForRollout(GameState state, int playerID) {
 		
 		/**
+		 * NOTE - WE ARE NO LONGER DOING A HAND MADE HEURISTIC -- WE WILL BE DOING THE GENOME WITH FEATURE MAP FIRST (AND THEN COMPARE WITH THIS OPTION IF WE HAVE TIME)
 		 * Goal: 
 		 * First check if you can play a card safely. If you can play a card - then play the card
 		 * Else - If you know a card you can discard a card - then discard the card
@@ -31,6 +32,11 @@ public class MyMCTSAgent extends MCTS {
 		 * about their hand as to maximize the amount of information we can tell (and that has not already been told before)
 		 * Else - play a random move  
 		 */
+		
+		// Get what is currently known (about everyone's hand)
+		// For each action we can have
+			// we generate the next state if we take some action
+			// for the set up features we weigh it against our genome
 			
 		Collection<Action> legalActions = Utils.generateActions(playerID, state);
 
