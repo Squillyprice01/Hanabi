@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
 import com.fossgalaxy.games.fireworks.ai.mcts.MCTS;
@@ -15,6 +16,12 @@ import com.fossgalaxy.games.fireworks.state.actions.Action;
 
 public class MyMCTSAgent extends MCTS {
 	
+	private Genome genome;
+
+	public MyMCTSAgent(int roundLength, int rolloutDepth, int treeDepthMul, Genome genome) {
+		super(roundLength, rolloutDepth, treeDepthMul);
+		this.genome = genome;
+    }
 	/**
 	 * This is where our neural network should be making the decisions 
 	 * Right now it is getting the first action
