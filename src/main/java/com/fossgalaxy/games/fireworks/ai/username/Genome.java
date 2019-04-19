@@ -95,6 +95,21 @@ public class Genome
 	System.out.println("second genome's fitness: " + organism2.fitness);
 	return bestGenome.fitness == 100;
   }
+	
+public static ArrayList<Genome> nextGeneration(ArrayList<Genome> population, double mutationRate) { // Elitism was in the paramater with default value of 0.1 (cant do this in java??)
+	  double elitism = 0.1;
+	  ArrayList<Genome> childpop;
+	  ArrayList<Genome> populationCopy = (ArrayList<Genome>) population.clone(); // copy so as to not change the original
+	  populationCopy = populationCopy.sort(); // //compareToMethod // sort an array list based off of the genomes second element
+	  int valsToCopy = (int) Math.floor(elitism*(population.size()));
+	  for (int i = 0; i < valsToCopy; i++) {
+		  childpop.add(populationCopy.get(i));
+	  }
+	  for (int j = valsToCopy; j < population.size(); j++) {
+			  childpop.add(getOffspring(population, mutationRate));
+	  }
+	  return childpop;
+  }
   
   
   public static boolean flipCoin(double p){
