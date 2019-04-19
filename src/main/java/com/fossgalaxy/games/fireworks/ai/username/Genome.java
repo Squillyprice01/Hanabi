@@ -36,7 +36,8 @@ public class Genome implements Comparable<Genome>
       this.fitness = fitness;
   }
     
-  public static void testMethods()
+  // arguments are passed using the text field below this editor
+  public static void main(String[] args)
   {
     System.out.println("Testing vectorMutate:\nPass? " + testVectorMutate() + "\n");
     System.out.println("Testing tournamentSelection:\nPass? " + testTournamentSelection() + "\n");
@@ -102,11 +103,11 @@ public class Genome implements Comparable<Genome>
     ArrayList<Genome> childpop = new ArrayList<Genome>();
     //ArrayList<Genome> populationCopy = (ArrayList<Genome>) population.clone(); // copy so as to not change the original
     //population = Collections.sort(population);
-    int valsToCopy = (int) Math.floor(elitism*(population.size()));
-    for (int i = 0; i < valsToCopy; i++) {
-      childpop.add(population.get(i));
-    }
-    for (int j = valsToCopy; j < population.size(); j++) {
+    //int valsToCopy = (int) Math.floor(elitism*(population.size()));
+    //for (int i = 0; i < valsToCopy; i++) {
+    //  childpop.add(population.get(i));
+    //}
+    for (int j = 0; j < population.size(); j++) {
       childpop.add(generateOffspring(population, mutationRate, sigma));
     }
     return childpop;
