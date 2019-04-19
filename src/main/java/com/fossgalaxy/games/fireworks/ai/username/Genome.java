@@ -112,10 +112,10 @@ public class Genome
   }
 	
   public static Genome generateOffspring(ArrayList<Genome> population){
-	  generateOffspring(population, 0.2, 1.0);
+	  return generateOffspring(population, 0.2, 1.0);
   }
   public static Genome generateOffspring(ArrayList<Genome> population, double mutationRate){
-	generateOffspring(population, mutationRate, 1.0);
+	return generateOffspring(population, mutationRate, 1.0);
   }
   public static Genome generateOffspring(ArrayList<Genome> population, double mutationRate, double sigma){
 	Random r = new Random();
@@ -137,20 +137,20 @@ public class Genome
 	}
   }
   public static boolean testGenerateOffspring(){
-    double[] genome1 = {1};
-    double[] genome2 = {0};
-    double fitness1 = 100;
-    double fitness2 = 0;
-    Genome organism1 = new Genome(genome1, fitness1);
-    Genome organism2 = new Genome(genome2, fitness2);
-    ArrayList<Genome> population = new ArrayList<Genome>();
-    population.add(organism1);
-    population.add(organism2);
-    Genome bestGenome = generateOffspring(population, 1.0, 10.0);
-    System.out.println("first genome's fitness: " + organism1.fitness);
-    System.out.println("second genome's fitness: " + organism2.fitness);
-    double[] testAgainst = {1}; 
-    return (bestGenome.fitness == 100 && !Arrays.equals(bestGenome.genome, testAgainst));
+	double[] genome1 = {1};
+	double[] genome2 = {0};
+	double fitness1 = 100;
+	double fitness2 = 0;
+	Genome organism1 = new Genome(genome1, fitness1);
+	Genome organism2 = new Genome(genome2, fitness2);
+	ArrayList<Genome> population = new ArrayList<Genome>();
+	population.add(organism1);
+	population.add(organism2);
+	Genome bestGenome = generateOffspring(population, 1.0, 10.0);
+	System.out.println("first genome's fitness: " + organism1.fitness);
+	System.out.println("second genome's fitness: " + organism2.fitness);
+	double[] testAgainst = {1}; 
+	return (bestGenome.fitness == 100 && !Arrays.equals(bestGenome.genome, testAgainst));
   }
 	
   public int compareTo(Genome other){
