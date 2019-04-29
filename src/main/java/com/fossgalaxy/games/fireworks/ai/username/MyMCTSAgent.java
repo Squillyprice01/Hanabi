@@ -47,6 +47,7 @@ public class MyMCTSAgent extends MCTS {
 		Collection<Action> legalActionsUtil = Utils.generateActions(playerID, state);
         List<Action> listAction = new ArrayList<>(legalActionsUtil);
         Collections.shuffle(listAction); // picks a random action
+        
 
         for(int actionIndex = 0; actionIndex < listAction.size(); actionIndex++) {
         	GameState copy = state.getCopy();
@@ -74,51 +75,43 @@ public class MyMCTSAgent extends MCTS {
 		featureList.add((double) state.getTableValue(CardColour.WHITE));
 		
 		//for every player
-//		for(int player = 0; player < state.getPlayerCount(); player++) {
-//			Hand curHand = state.getHand(player);
-//			//for every card in the hand
-//			for(int cardIndex = 0; cardIndex < state.getHandSize(); cardIndex++) {
-//				//System.out.println("Player " + player +" has a card");
-//				//append the color
-//				if(curHand.getKnownColour(cardIndex) == null) {
-//					//append zero
-//					featureList.add((double) 0);
-//				} else {
-//					//append 1-5
-//					CardColour color = curHand.getKnownColour(cardIndex);
-//					switch(color) {
-//						case RED:
-//							featureList.add((double) 1);
-//						case BLUE:
-//							featureList.add((double) 2);
-//						case GREEN:
-//							featureList.add((double) 3);
-//						case ORANGE:
-//							featureList.add((double) 4);
-//						case WHITE:
-//							featureList.add((double) 5);
-//						default:
-//							featureList.add((double) -1);
-//					}
-//				}
-//				
-//				//append the value
-//				if(curHand.getKnownValue(cardIndex) == null) {
-//					featureList.add((double) 0);
-//				} else {
-//					featureList.add((double) curHand.getKnownValue(cardIndex));
-//				}
-//			}
-//		}
-	
-//		int predictedLength = state.getPlayerCount() * state.getHandSize() + 8;
-//		if(predictedLength == featureList.size()) {
-//			System.out.println("they match");
-//		} else {
-//			System.out.println("they don't match");
-//		}
+		for(int player = 0; player < state.getPlayerCount(); player++) {
+			Hand curHand = state.getHand(player);
+			//for every card in the hand
+			for(int cardIndex = 0; cardIndex < state.getHandSize(); cardIndex++) {
+				//System.out.println("Player " + player +" has a card");
+				//append the color
+				if(curHand.getKnownColour(cardIndex) == null) {
+					//append zero
+					featureList.add((double) 0);
+				} else {
+					//append 1-5
+					CardColour color = curHand.getKnownColour(cardIndex);
+					switch(color) {
+						case RED:
+							featureList.add((double) 1);
+						case BLUE:
+							featureList.add((double) 2);
+						case GREEN:
+							featureList.add((double) 3);
+						case ORANGE:
+							featureList.add((double) 4);
+						case WHITE:
+							featureList.add((double) 5);
+						default:
+							featureList.add((double) -1);
+					}
+				}
+				
+				//append the value
+				if(curHand.getKnownValue(cardIndex) == null) {
+					featureList.add((double) 0);
+				} else {
+					featureList.add((double) curHand.getKnownValue(cardIndex));
+				}
+			}
+		}
 		
-//		System.out.println("The length of the feature map is: " + featureList.size());
 		double[] featureArray = new double[featureList.size()];
 		for(int i = 0; i < featureList.size(); i++) {
 			featureArray[i] = featureList.get(i);
