@@ -1,3 +1,4 @@
+package com.fossgalaxy.games.fireworks.ai.username;
 import java.lang.Math;
 import java.util.Random;
 import java.util.Arrays;
