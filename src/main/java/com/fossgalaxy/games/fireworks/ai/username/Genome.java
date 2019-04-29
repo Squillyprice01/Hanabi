@@ -21,6 +21,11 @@ public class Genome implements Comparable<Genome>
       this.fitness = fitness;
   }
   
+//  public Genome(String s) {
+//	  this.genome = fromString(s);
+//	  this.fitness = -1;
+//  }
+  
   public double[] getGenome(){
       return this.genome;
   }
@@ -38,7 +43,7 @@ public class Genome implements Comparable<Genome>
   }
     
   // arguments are passed using the text field below this editor
-  public static void main(String[] args)
+  public static void testMethods()
   {
     System.out.println("Testing vectorMutate:\nPass? " + testVectorMutate() + "\n");
     System.out.println("Testing tournamentSelection:\nPass? " + testTournamentSelection() + "\n");
@@ -46,7 +51,7 @@ public class Genome implements Comparable<Genome>
 	System.out.println("Testing nextGeneration:\nPass? " + testNextGeneration() + "\n");
   }
 
-  public static double[] vectorMutate(double[] genome, double mutationRate, double sigma){
+  protected static double[] vectorMutate(double[] genome, double mutationRate, double sigma){
   	Random r = new Random();
   	System.out.println("Original Genome: " + Arrays.toString(genome));
   	for(int i = 0; i < genome.length; i++){
@@ -57,7 +62,7 @@ public class Genome implements Comparable<Genome>
   	System.out.println("New Genome: " + Arrays.toString(genome));
   	return genome;
   }
-  public static boolean testVectorMutate(){
+  protected static boolean testVectorMutate(){
   	double[] genome = {1,2,3,4,5,6,7,8,9,10};
     double[] modifiedGenome = vectorMutate(genome, 1.0, 1.0);
     return Arrays.equals(genome, modifiedGenome);
@@ -68,7 +73,7 @@ public class Genome implements Comparable<Genome>
   
   
   
-  public static Genome tournamentSelection(ArrayList<Genome> population){
+  protected static Genome tournamentSelection(ArrayList<Genome> population){
 	Random r = new Random();
 	int firstIndex = r.nextInt(population.size());
 	int secondIndex = r.nextInt(population.size());
@@ -84,7 +89,7 @@ public class Genome implements Comparable<Genome>
 		return organism2;
 	}
   }
-  public static boolean testTournamentSelection(){
+  protected static boolean testTournamentSelection(){
 	double[] genome1 = {1};
 	double[] genome2 = {0};
 	double fitness1 = 100;
@@ -100,7 +105,7 @@ public class Genome implements Comparable<Genome>
 	return bestGenome.fitness == 100;
   }
 	
-  public static ArrayList<Genome> nextGeneration(ArrayList<Genome> population, double mutationRate, double sigma, double elitism) { 
+  protected static ArrayList<Genome> nextGeneration(ArrayList<Genome> population, double mutationRate, double sigma, double elitism) { 
     ArrayList<Genome> childpop = new ArrayList<Genome>();
     //ArrayList<Genome> populationCopy = (ArrayList<Genome>) population.clone(); // copy so as to not change the original
     //population = Collections.sort(population);
@@ -113,7 +118,7 @@ public class Genome implements Comparable<Genome>
     }
     return childpop;
   }
-  public static boolean testNextGeneration(){
+  protected static boolean testNextGeneration(){
 	double[] genome1 = {100};
 	double[] genome2 = {200};
 	double[] genome3 = {300};
@@ -158,13 +163,13 @@ public class Genome implements Comparable<Genome>
 	return test1Pass;
   }
 	
-  public static Genome generateOffspring(ArrayList<Genome> population){
+  protected static Genome generateOffspring(ArrayList<Genome> population){
 	  return generateOffspring(population, 0.2, 1.0);
   }
-  public static Genome generateOffspring(ArrayList<Genome> population, double mutationRate){
+  protected static Genome generateOffspring(ArrayList<Genome> population, double mutationRate){
 	return generateOffspring(population, mutationRate, 1.0);
   }
-  public static Genome generateOffspring(ArrayList<Genome> population, double mutationRate, double sigma){
+  protected static Genome generateOffspring(ArrayList<Genome> population, double mutationRate, double sigma){
 	Random r = new Random();
 	int firstIndex = r.nextInt(population.size());
 	int secondIndex = r.nextInt(population.size());
@@ -183,7 +188,7 @@ public class Genome implements Comparable<Genome>
 		return newG;
 	}
   }
-  public static boolean testGenerateOffspring(){
+  protected static boolean testGenerateOffspring(){
 	double[] genome1 = {1};
 	double[] genome2 = {0};
 	double fitness1 = 100;
@@ -210,9 +215,20 @@ public class Genome implements Comparable<Genome>
 	}
   }
   
-  public static boolean flipCoin(double p){
+  protected static boolean flipCoin(double p){
       Random r = new Random();
       return p >= r.nextDouble();
   }
   
+  public String toString() {
+	  String representation = "";
+	  for(int i = 0; i < this.genome.length; i++) {
+		  if(i == this.genome.length - 1) {
+		  representation += this.genome[i];
+		  } else {
+			  representation += this.genome[i] +",";
+		  }
+	  }
+	  return representation;
+  }
 }
