@@ -5,23 +5,27 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
 import com.fossgalaxy.games.fireworks.ai.mcts.MCTS;
+import com.fossgalaxy.games.fireworks.ai.mcts.MCTSNode;
 import com.fossgalaxy.games.fireworks.state.CardColour;
 import com.fossgalaxy.games.fireworks.state.GameState;
+import com.fossgalaxy.games.fireworks.state.Hand;
 import com.fossgalaxy.games.fireworks.state.actions.Action;
+import com.fossgalaxy.games.fireworks.state.events.GameEvent;
 
 public class MyMCTSAgent extends MCTS {
 	
 	private Genome genome;
 
-	public MyMCTSAgent(int roundLength, int rolloutDepth, int treeDepthMul, Genome genome) {
-		super(roundLength, rolloutDepth, treeDepthMul);
-		this.genome = genome;
-    }
+	//public MyMCTSAgent(int roundLength, int rolloutDepth, int treeDepthMul, Genome genome) {
+	//	super(roundLength, rolloutDepth, treeDepthMul);
+	//	this.genome = genome;
+    //}
 	/**
 	 * This is where our neural network should be making the decisions 
 	 * Right now it is getting the first action
@@ -40,65 +44,105 @@ public class MyMCTSAgent extends MCTS {
 		 * Else - play a random move  
 		 */
 		
-		// Get what is currently known (about everyone's hand)
-		// For each action we can have
-			// we generate the next state if we take some action
-			// for the set up features we weigh it against our genome
-			
-		Collection<Action> legalActions = Utils.generateActions(playerID, state);
-
-        List<Action> listAction = new ArrayList<>(legalActions);
+		Collection<Action> legalActionsUtil = Utils.generateActions(playerID, state);
+        List<Action> listAction = new ArrayList<>(legalActionsUtil);
         Collections.shuffle(listAction); // picks a random action
-        
-        ArrayList<ArrayList<Integer>> numberList = new ArrayList<ArrayList<Integer>>();
-        ArrayList<ArrayList<CardColour>> colorList = new ArrayList<ArrayList<CardColour>>();
-        
-        
-        for (int numPlayers = 0; numPlayers < state.getPlayerCount(); numPlayers++) {
-        	ArrayList<Integer> tempInt = new ArrayList<Integer>();
-        	ArrayList<CardColour> tempColor = new ArrayList<CardColour>();
-	        for (int card = 0; card < state.getHand(playerID).getSize(); card++) {
-	            System.out.println("getting known value for player " + playerID + " in slot " + card + ": " + state.getHand(playerID).getKnownValue(card));
-	            System.out.println("getting known color for player " + playerID + " in slot " + card + ": " + state.getHand(playerID).getKnownColour(card));           
-	            
-	        	// goal get info
-//	        	tempInt.add(state.getHand(playerID).getKnownValue(card));
-//	        	tempColor.add(state.getHand(playerID).getKnownColour(card));
-//	        	System.out.println("tempInt " + tempInt.get(card));
-	        }
-//	        numberList.add(tempInt);
-//	        colorList.add(tempColor);
+
+        for(int actionIndex = 0; actionIndex < listAction.size(); actionIndex++) {
+        	GameState copy = state.getCopy();
+            Action curr = listAction.get(actionIndex);
+            List<GameEvent> events = curr.apply(playerID, copy);
+            events.forEach(copy::addEvent);
+            copy.tick();
+            System.out.println("This state's sum is: " + sumArray(getFeatures(copy)));
         }
-        
-        // print the numList and colorList
-//        for (int j = 0; j < numberList.size(); j++) {
-//        	for (int i = 0; i < numberList.get(j).size(); i++) {
-//        		System.out.print("numberList: " + numberList.get(i).get(j));
-//     	        System.out.print("colorList: " + colorList.get(i).get(j));
-//             }
-//        }
-        
-//        PrintStream f = null;
-//		try {
-//			f = new PrintStream("./out.txt");
-//			System.setOut(f);
-//		} catch (FileNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//        
-//        System.out.println("numberList " + numberList.get(0).get(0));
-       
-        // if the next player does not know anything about their hand - tell them something about their hand (preferably the most/best info)
-//        if ()
-        
-        
-        // Debug statements
-//        Collection<Action> suitAc = Utils.generateSuitableActions(playerID, state);
-//        System.out.println("actions? " + suitAc);
-//        System.out.println("player: " + playerID + " list of actions " + listAction + " info " + state.getInfomation());
+
         return listAction.get(0);
+    }
+	
+	private static double[] getFeatures(GameState state) {
+		
+		ArrayList<Double> featureList = new ArrayList<Double>();
+		
+		featureList.add((double) state.getInfomation());
+		featureList.add((double) state.getLives());
+		featureList.add((double) state.getScore());
+		featureList.add((double) state.getTableValue(CardColour.RED));
+		featureList.add((double) state.getTableValue(CardColour.BLUE));
+		featureList.add((double) state.getTableValue(CardColour.GREEN));
+		featureList.add((double) state.getTableValue(CardColour.ORANGE));
+		featureList.add((double) state.getTableValue(CardColour.WHITE));
+		
+		//for every player
+//		for(int player = 0; player < state.getPlayerCount(); player++) {
+//			Hand curHand = state.getHand(player);
+//			//for every card in the hand
+//			for(int cardIndex = 0; cardIndex < state.getHandSize(); cardIndex++) {
+//				//System.out.println("Player " + player +" has a card");
+//				//append the color
+//				if(curHand.getKnownColour(cardIndex) == null) {
+//					//append zero
+//					featureList.add((double) 0);
+//				} else {
+//					//append 1-5
+//					CardColour color = curHand.getKnownColour(cardIndex);
+//					switch(color) {
+//						case RED:
+//							featureList.add((double) 1);
+//						case BLUE:
+//							featureList.add((double) 2);
+//						case GREEN:
+//							featureList.add((double) 3);
+//						case ORANGE:
+//							featureList.add((double) 4);
+//						case WHITE:
+//							featureList.add((double) 5);
+//						default:
+//							featureList.add((double) -1);
+//					}
+//				}
+//				
+//				//append the value
+//				if(curHand.getKnownValue(cardIndex) == null) {
+//					featureList.add((double) 0);
+//				} else {
+//					featureList.add((double) curHand.getKnownValue(cardIndex));
+//				}
+//			}
+//		}
+	
+//		int predictedLength = state.getPlayerCount() * state.getHandSize() + 8;
+//		if(predictedLength == featureList.size()) {
+//			System.out.println("they match");
+//		} else {
+//			System.out.println("they don't match");
+//		}
+		
+//		System.out.println("The length of the feature map is: " + featureList.size());
+		double[] featureArray = new double[featureList.size()];
+		for(int i = 0; i < featureList.size(); i++) {
+			featureArray[i] = featureList.get(i);
+		}
+		return featureArray;
 	}
 	
+	private double sumArray(double[] arr) {
+		double sum = 0.0;
+		for(int i = 0; i < arr.length; i++) {
+			sum += arr[i];
+		}
+		return sum;
+	}
 	
+	private double dot(double[] arr1, double[] arr2) {
+		if(arr1.length != arr2.length) {
+			throw new IllegalStateException("dot product only defined when matricies have the same length");
+		} else {
+			double sum = 0.0;
+			for(int i = 0; i < arr1.length; i++) {
+				sum += arr1[i] * arr2[i];
+			}
+			return sum;
+		}
+	}
 }
