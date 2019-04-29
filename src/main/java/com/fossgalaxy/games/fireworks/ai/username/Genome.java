@@ -105,7 +105,7 @@ public class Genome implements Comparable<Genome>
 	return bestGenome.fitness == 100;
   }
 	
-  protected static ArrayList<Genome> nextGeneration(ArrayList<Genome> population, double mutationRate, double sigma, double elitism) { 
+  public static ArrayList<Genome> nextGeneration(ArrayList<Genome> population, double mutationRate, double sigma, double elitism) { 
     ArrayList<Genome> childpop = new ArrayList<Genome>();
     //ArrayList<Genome> populationCopy = (ArrayList<Genome>) population.clone(); // copy so as to not change the original
     //population = Collections.sort(population);

@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class GenerateGeneration {
 	static int numberOfGenesInGenome = 8;
-	static int numberOfIndividuals = 100;
+	static int numberOfIndividuals = 2;
 	
 	public static void main(String[] args) {
 		Random random = new Random();
@@ -17,7 +17,7 @@ public class GenerateGeneration {
      		for(int j = 0 ; j < numberOfIndividuals; j++) {
 	     		for(int i = 0; i < numberOfGenesInGenome; i++) {
 	     			if(i == numberOfGenesInGenome - 1) {
-	     				System.out.println(random.nextDouble());
+	     				System.out.println(random.nextDouble()+",0.0,0.0,0.0");
 	     			} else {
 	     				System.out.print(random.nextDouble() + ",");
 	     			}
