@@ -9,23 +9,31 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import com.fossgalaxy.games.fireworks.ai.Agent;
 import com.fossgalaxy.games.fireworks.ai.iggi.Utils;
 import com.fossgalaxy.games.fireworks.ai.mcts.MCTS;
 import com.fossgalaxy.games.fireworks.ai.mcts.MCTSNode;
+import com.fossgalaxy.games.fireworks.annotations.AgentConstructor;
+import com.fossgalaxy.games.fireworks.annotations.Parameter;
 import com.fossgalaxy.games.fireworks.state.CardColour;
 import com.fossgalaxy.games.fireworks.state.GameState;
 import com.fossgalaxy.games.fireworks.state.Hand;
 import com.fossgalaxy.games.fireworks.state.actions.Action;
 import com.fossgalaxy.games.fireworks.state.events.GameEvent;
+import com.fossgalaxy.games.fireworks.utils.AgentUtils;
 
 public class MyMCTSAgent extends MCTS {
 	
 	private Genome genome;
+	private static Random random;
 
-	//public MyMCTSAgent(int roundLength, int rolloutDepth, int treeDepthMul, Genome genome) {
-	//	super(roundLength, rolloutDepth, treeDepthMul);
-	//	this.genome = genome;
-    //}
+	@AgentConstructor("MyMCTSAgent")
+	@Parameter(id=0, func="parseAgents")
+	public MyMCTSAgent(Genome genome) {
+		super(MCTS.DEFAULT_ITERATIONS, MCTS.DEFAULT_ROLLOUT_DEPTH, MCTS.DEFAULT_TREE_DEPTH_MUL);
+		this.genome = genome;
+		this.random = new Random();
+    }
 	/**
 	 * This is where our neural network should be making the decisions 
 	 * Right now it is getting the first action
@@ -47,17 +55,37 @@ public class MyMCTSAgent extends MCTS {
 		Collection<Action> legalActionsUtil = Utils.generateActions(playerID, state);
         List<Action> listAction = new ArrayList<>(legalActionsUtil);
         Collections.shuffle(listAction); // picks a random action
+        ArrayList<Double> distribution = new ArrayList<Double>();
+        double sum = 0.0;
         
-
-        for(int actionIndex = 0; actionIndex < listAction.size(); actionIndex++) {
+        //get feature values for every state
+        for(int i = 0; i < listAction.size(); i++) {
         	GameState copy = state.getCopy();
-            Action curr = listAction.get(actionIndex);
+            Action curr = listAction.get(i);
             List<GameEvent> events = curr.apply(playerID, copy);
             events.forEach(copy::addEvent);
             copy.tick();
-            System.out.println("This state's sum is: " + sumArray(getFeatures(copy)));
+            distribution.add(dot(getFeatures(copy), this.genome.getGenome()));
+            sum += distribution.get(i);
         }
+        
+        //create a probability density
+    	double temp = distribution.get(0) / sum;
+    	distribution.set(0, temp);
+        for(int i = 1; i < distribution.size(); i++) {
+        	temp = distribution.get(i) / sum;
+        	distribution.set(i, temp + distribution.get(i - 1));
+        }
+        distribution.sort(null);
 
+        //select an action based on the distribution
+        double rando = this.random.nextDouble();
+        for(int i = 0; i < distribution.size(); i++) {
+        	if(rando < distribution.get(i)) {
+        		return listAction.get(i);
+        	}
+        }
+        
         return listAction.get(0);
     }
 	
@@ -75,56 +103,48 @@ public class MyMCTSAgent extends MCTS {
 		featureList.add((double) state.getTableValue(CardColour.WHITE));
 		
 		//for every player
-		for(int player = 0; player < state.getPlayerCount(); player++) {
-			Hand curHand = state.getHand(player);
-			//for every card in the hand
-			for(int cardIndex = 0; cardIndex < state.getHandSize(); cardIndex++) {
-				//System.out.println("Player " + player +" has a card");
-				//append the color
-				if(curHand.getKnownColour(cardIndex) == null) {
-					//append zero
-					featureList.add((double) 0);
-				} else {
-					//append 1-5
-					CardColour color = curHand.getKnownColour(cardIndex);
-					switch(color) {
-						case RED:
-							featureList.add((double) 1);
-						case BLUE:
-							featureList.add((double) 2);
-						case GREEN:
-							featureList.add((double) 3);
-						case ORANGE:
-							featureList.add((double) 4);
-						case WHITE:
-							featureList.add((double) 5);
-						default:
-							featureList.add((double) -1);
-					}
-				}
-				
-				//append the value
-				if(curHand.getKnownValue(cardIndex) == null) {
-					featureList.add((double) 0);
-				} else {
-					featureList.add((double) curHand.getKnownValue(cardIndex));
-				}
-			}
-		}
+//		for(int player = 0; player < state.getPlayerCount(); player++) {
+//			Hand curHand = state.getHand(player);
+//			//for every card in the hand
+//			for(int cardIndex = 0; cardIndex < state.getHandSize(); cardIndex++) {
+//				//System.out.println("Player " + player +" has a card");
+//				//append the color
+//				if(curHand.getKnownColour(cardIndex) == null) {
+//					//append zero
+//					featureList.add((double) 0);
+//				} else {
+//					//append 1-5
+//					CardColour color = curHand.getKnownColour(cardIndex);
+//					switch(color) {
+//						case RED:
+//							featureList.add((double) 1);
+//						case BLUE:
+//							featureList.add((double) 2);
+//						case GREEN:
+//							featureList.add((double) 3);
+//						case ORANGE:
+//							featureList.add((double) 4);
+//						case WHITE:
+//							featureList.add((double) 5);
+//						default:
+//							featureList.add((double) -1);
+//					}
+//				}
+//				
+//				//append the value
+//				if(curHand.getKnownValue(cardIndex) == null) {
+//					featureList.add((double) 0);
+//				} else {
+//					featureList.add((double) curHand.getKnownValue(cardIndex));
+//				}
+//			}
+//		}
 		
 		double[] featureArray = new double[featureList.size()];
 		for(int i = 0; i < featureList.size(); i++) {
 			featureArray[i] = featureList.get(i);
 		}
 		return featureArray;
-	}
-	
-	private double sumArray(double[] arr) {
-		double sum = 0.0;
-		for(int i = 0; i < arr.length; i++) {
-			sum += arr[i];
-		}
-		return sum;
 	}
 	
 	private double dot(double[] arr1, double[] arr2) {
@@ -138,4 +158,16 @@ public class MyMCTSAgent extends MCTS {
 			return sum;
 		}
 	}
+
+	//used to construct the agent
+	public static Genome parseAgents(String s) {
+        String[] genes = s.split(",");
+        double[] genome = new double[genes.length]; 
+        for(int i = 0; i < genes.length; i++ ) {
+        	genome[i] = Double.parseDouble(genes[i]);
+        }
+        Genome genomeObject = new Genome(genome);
+        return genomeObject;
+    }
+
 }
