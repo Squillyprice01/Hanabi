@@ -28,7 +28,7 @@ public class MyMCTSAgent extends MCTS {
 	private static Random random;
 
 	@AgentConstructor("MyMCTSAgent")
-	@Parameter(id=0, func="parseAgents")
+	@Parameter(id=0, func="parse")
 	public MyMCTSAgent(Genome genome) {
 		super(MCTS.DEFAULT_ITERATIONS, MCTS.DEFAULT_ROLLOUT_DEPTH, MCTS.DEFAULT_TREE_DEPTH_MUL);
 		this.genome = genome;
@@ -160,7 +160,7 @@ public class MyMCTSAgent extends MCTS {
 	}
 
 	//used to construct the agent
-	public static Genome parseAgents(String s) {
+	public static Genome parse(String s) {
         String[] genes = s.split(",");
         double[] genome = new double[genes.length]; 
         for(int i = 0; i < genes.length; i++ ) {

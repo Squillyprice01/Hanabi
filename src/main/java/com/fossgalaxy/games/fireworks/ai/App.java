@@ -28,29 +28,37 @@ public class App
     public static void main( String[] args ) throws FileNotFoundException
     {
         int numPlayers = 4;
-        int numGames = 1;
-        int numGenerations = 5;
-        int numIndividuals = 2;
+        int numGames = 10;
+        int numGenerations = 50;
+        int numIndividuals = 10;
         String agentName = "MyMCTSAgent";
 
         Random random = new Random();
         ArrayList<Genome> generationList = new ArrayList<Genome>();
         for(int generation = 1; generation <= numGenerations; generation++) {
-            File curGen = new File("C:\\Users\\pricew\\Hanabi\\generation" + generation + ".txt");
+            
+        	File curGen = new File("C:\\Users\\pricew\\Hanabi\\generation" + generation + ".txt");
         	int nextGenIndex = generation + 1; 
             File nextGen = new File("C:\\Users\\pricew\\Hanabi\\generation" + nextGenIndex +".txt");
         	Scanner scan = new Scanner(curGen);
-        	//PrintStream f = new PrintStream(curGen);
-     		//System.setOut(f);
         	String generationInfo = "";
+        	
         	for(int individual = 0; individual < numIndividuals; individual++) {
                 
         		StatsSummary statsSummary = new BasicStats();
-        		String genes = scan.nextLine();
-        		double fitness = Double.parseDouble(genes.substring(genes.length() - 7, genes.length()- 4));
-        		genes = genes.substring(0, genes.length() - 12);
-        		generationInfo += genes;
-        		Genome genome = MyMCTSAgent.parse(genes);
+        		String genesString = scan.nextLine();
+        		String[] genesArr = genesString.split(",");
+        		double fitness = Double.parseDouble(genesArr[genesArr.length - 2]);
+        		genesString = "";
+        		for(int i = 0; i < genesArr.length - 3; i++) {
+        			if(i == genesArr.length - 4) {
+        				genesString += genesArr[i];
+        			} else {
+        				genesString += genesArr[i] +",";
+        			}
+        		}
+        		generationInfo += genesString;
+        		Genome genome = MyMCTSAgent.parse(genesString);
         		genome.setFitness(fitness);
         		generationList.add(genome);
         		
@@ -75,16 +83,20 @@ public class App
 		                statsSummary.getMax(),
 		                statsSummary.getN()));
 		        	generationInfo += "," + Math.floor(statsSummary.getMean()) + "," + Math.floor(statsSummary.getMin()) + "," + Math.floor(statsSummary.getMax()) + "\n";
-		        
+		        	
 		        }
         	
-        	generationList = Genome.nextGeneration(generationList, 0.175, 0.2, 0);
+        	generationList = Genome.nextGeneration(generationList, 0.175, 0.2, 0.1);
         	String nextGenInfo = "";
         	Scanner scoreRead = new Scanner(generationInfo);
-        	for(int i = 0; i < generationList.size(); i++) {
-        		String temp = scoreRead.nextLine();
-        		temp = temp.substring(temp.length() - 12);
-        		nextGenInfo += generationList.get(i).toString() + temp + "\n";
+        	int current = 0;
+        	while(scoreRead.hasNextLine()) {
+        		String nextGenome = scoreRead.nextLine();
+        		//System.out.println(nextGenome);
+        		String[] genes = nextGenome.split(",");
+        		int len = genes.length;
+        		nextGenInfo += generationList.get(current).toString() + "," + genes[len - 3] + "," + genes[len - 2] + "," + genes[len - 1] + "\n";
+        		current++;
         	}
         	scoreRead.close();
         	PrintStream f = new PrintStream(nextGen);

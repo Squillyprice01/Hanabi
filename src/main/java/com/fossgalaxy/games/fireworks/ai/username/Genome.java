@@ -53,13 +53,13 @@ public class Genome implements Comparable<Genome>
 
   protected static double[] vectorMutate(double[] genome, double mutationRate, double sigma){
   	Random r = new Random();
-  	System.out.println("Original Genome: " + Arrays.toString(genome));
+  	//System.out.println("Original Genome: " + Arrays.toString(genome));
   	for(int i = 0; i < genome.length; i++){
   	    if(flipCoin(mutationRate)){
   	        genome[i] += sigma*r.nextGaussian();
   	    }
   	}
-  	System.out.println("New Genome: " + Arrays.toString(genome));
+  	//System.out.println("New Genome: " + Arrays.toString(genome));
   	return genome;
   }
   protected static boolean testVectorMutate(){

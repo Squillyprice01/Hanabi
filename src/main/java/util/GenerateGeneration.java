@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class GenerateGeneration {
 	static int numberOfGenesInGenome = 8;
-	static int numberOfIndividuals = 2;
+	static int numberOfIndividuals = 10;
 	
 	public static void main(String[] args) {
 		Random random = new Random();
