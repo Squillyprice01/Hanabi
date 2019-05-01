@@ -11,9 +11,10 @@ Hanabi is a cooperative card game with an interesting partial observability mech
 
 To run this program, maven install the main directory. From there, simply run App.java.
 Some useful parameters in App.java:
--numGames: the number of times an individual agent is evaluated
--numGenerations: the number of generations evaluated
--numIndividuals: the number of individuals per generation.
+
+  -numGames: the number of times an individual agent is evaluated
+  -numGenerations: the number of generations evaluated
+  -numIndividuals: the number of individuals per generation.
 
 To create the starting generation, run Hanabi/src/main/java/util/GenerateGeneration.java. The number of individuals must match the parameter in this file.
 
